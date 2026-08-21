@@ -29,8 +29,8 @@ public class Paciente implements Serializable {
             }
         }
         return "Diagnóstico não anexado.";
-    }S
+    }
     public int getId() { return id; }
     public String getNome() { return nome; }
     public String getCpf() { return cpf; }
-}S
+}
