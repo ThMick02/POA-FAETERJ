@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banco de Tempo - Escambo de Serviços e Habilidades</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            padding-bottom: 50px;
+        }
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid var(--border);
+            padding: 14px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .user-panel {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .badge-balance {
+            background-color: #e0e7ff;
+            color: var(--primary);
+            padding: 6px 12px;
+            border-radius: 9999px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 28px auto;
+            padding: 0 20px;
+        }
+
+        /* Área de Login e Registro */
+        .auth-container {
+            max-width: 440px;
+            margin: 40px auto;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .auth-tab-btn {
+            flex: 1;
+            padding: 12px;
+            background: none;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .auth-tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-main);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+        }
+
+        .btn-outline:hover {
+            background: #f1f5f9;
+            color: var(--text-main);
+        }
+
+        .btn-success { background: var(--success); }
+        .btn-success:hover { background: #059669; }
+        .btn-danger { background: var(--danger); }
+        .btn-danger:hover { background: #dc2626; }
+        .btn-warning { background: var(--warning); }
+        .btn-warning:hover { background: #d97706; }
+
+        .bonus-callout {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Barra de Navegação Interna */
+        .app-tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 12px;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            background: #eef2ff;
+        }
+
+        /* Grid de cards de habilidades */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .category-tag {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 4px 8px;
+            border-radius: 6px;
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .card-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .card-desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+            margin-bottom: 16px;
+            flex-grow: 1;
+        }
+
+        .card-footer {
+            border-top: 1px solid var(--border);
+            padding-top: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .provider-info {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .provider-name {
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        /* Lista de Propostas */
+        .proposal-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .status-PENDING { background: #fef3c7; color: #92400e; }
+        .status-ACCEPTED { background: #dbeafe; color: #1e40af; }
+        .status-IN_PROGRESS { background: #e0e7ff; color: #3730a3; }
+        .status-COMPLETED { background: #d1fae5; color: #065f46; }
+        .status-CANCELLED { background: #fee2e2; color: #991b1b; }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+        }
+
+        .quick-users {
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .quick-users-btns {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn-quick {
+            font-size: 0.8rem;
+            padding: 5px 10px;
+            border-radius: 6px;
+            background: #f1f5f9;
+            border: 1px solid var(--border);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <span>⏳</span>
+            <span>Banco de Tempo</span>
+        </div>
+        
+        <!-- Painel do Usuário (visível apenas quando logado) -->
+        <div class="user-panel" id="headerUserPanel" style="display: none;">
+            <div style="font-size: 0.9rem;">
+                Olá, <b id="headerUserName">Usuário</b>
+            </div>
+            <div class="badge-balance" title="Saldo disponível para gastar">
+                <span>⏱️</span>
+                <span id="headerTimeBalance">0.00h</span>
+            </div>
+            <div class="badge-balance" style="background: #fef3c7; color: #b45309;" title="Horas reservadas em propostas pendentes (Escrow)">
+                <span>🔒 Escrow:</span>
+                <span id="headerBlockedBalance">0.00h</span>
+            </div>
+            <div class="badge-balance" style="background: #f1f5f9; color: #334155;" title="Reputação média">
+                <span>⭐</span>
+                <span id="headerReputation">5.0</span>
+            </div>
+            <button class="btn btn-outline" style="padding: 6px 12px; font-size: 0.8rem;" onclick="logout()">Sair</button>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- TELA 1: LOGIN / CADASTRO DE PERFIL (quando deslogado) -->
+        <div id="authSection" class="auth-container">
+            <div class="auth-tabs">
+                <button class="auth-tab-btn active" id="tabBtnLogin" onclick="switchAuthTab('login')">Entrar</button>
+                <button class="auth-tab-btn" id="tabBtnRegister" onclick="switchAuthTab('register')">Criar Perfil</button>
+            </div>
+
+            <!-- Formulário de Login -->
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Nick ou Email</label>
+                    <input type="text" id="loginNick" class="form-control" placeholder="Ex: pedro ou pedro@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Senha</label>
+                    <input type="password" id="loginPassword" class="form-control" placeholder="Sua senha" required>
+                </div>
+                <button type="submit" class="btn btn-block" style="margin-top: 10px;">Entrar na Plataforma</button>
+            </form>
+
+            <!-- Formulário de Cadastro (Criar Perfil) -->
+            <form id="registerForm" onsubmit="handleRegister(event)" style="display: none;">
+                <div class="bonus-callout">
+                    <span>🎁</span>
+                    <span><b>Bônus de Boas-Vindas:</b> Ganhe <b>2.00 Horas-Crédito</b> ao criar seu perfil para já começar a trocar serviços!</span>
+                </div>
+                <div class="form-group">
+                    <label>Seu Nome ou Nick Público</label>
+                    <input type="text" id="regName" class="form-control" placeholder="Ex: Pedro Silva ou dev_pedro" required>
+                </div>
+                <div class="form-group">
+                    <label>Nick / Email de Acesso</label>
+                    <input type="text" id="regEmail" class="form-control" placeholder="Ex: pedro ou pedro@bancotempo.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Senha (mínimo 6 dígitos)</label>
+                    <input type="password" id="regPassword" class="form-control" minlength="6" placeholder="Crie uma senha segura" required>
+                </div>
+                <button type="submit" class="btn btn-block btn-success" style="margin-top: 10px;">Criar Meu Perfil e Receber Horas</button>
+            </form>
+
+            <!-- Contas de Demonstração Rápidas -->
+            <div class="quick-users">
+                <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">PERFIS DE DEMONSTRAÇÃO RÁPIDA:</span>
+                <div class="quick-users-btns">
+                    <button class="btn-quick" onclick="quickFill('alice')">👩 Alice (Tech)</button>
+                    <button class="btn-quick" onclick="quickFill('bob')">👨 Bob (Design)</button>
+                    <button class="btn-quick" onclick="quickFill('carlos')">👨 Carlos (Idiomas)</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TELA 2: ÁREA PRINCIPAL DA PLATAFORMA (quando logado) -->
+        <div id="mainSection" style="display: none;">
+            <div class="app-tabs">
+                <button class="tab-btn active" onclick="showAppTab('catalogo')">🛒 Catálogo de Habilidades</button>
+                <button class="tab-btn" onclick="showAppTab('propostas')">🤝 Minhas Trocas / Propostas</button>
+                <button class="tab-btn" onclick="showAppTab('nova-oferta')">➕ Publicar o que Sei Fazer</button>
+            </div>
+
+            <!-- ABA: Catálogo -->
+            <div id="app-tab-catalogo">
+                <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                    <h3 style="font-size: 1.1rem; color: var(--text-main);">Serviços e Habilidades Disponíveis</h3>
+                    <button class="btn btn-outline" style="font-size: 0.85rem;" onclick="loadSkills()">🔄 Atualizar</button>
+                </div>
+                <div class="grid" id="skillsGrid">
+                    <!-- Cards preenchidos via JS -->
+                </div>
+            </div>
+
+            <!-- ABA: Propostas -->
+            <div id="app-tab-propostas" style="display: none;">
+                <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                    <h3 style="font-size: 1.1rem; color: var(--text-main);">Suas Propostas de Escambo</h3>
+                    <button class="btn btn-outline" style="font-size: 0.85rem;" onclick="loadProposals()">🔄 Atualizar</button>
+                </div>
+                <div id="proposalsList">
+                    <!-- Lista preenchida via JS -->
+                </div>
+            </div>
+
+            <!-- ABA: Publicar Oferta -->
+            <div id="app-tab-nova-oferta" style="display: none;">
+                <div style="background: white; padding: 28px; border-radius: 12px; border: 1px solid var(--border); max-width: 600px;">
+                    <h3 style="margin-bottom: 16px;">O que você pode oferecer para a comunidade?</h3>
+                    <form onsubmit="handleCreateSkill(event)">
+                        <div class="form-group">
+                            <label>Título do Serviço</label>
+                            <input type="text" id="skillTitle" class="form-control" placeholder="Ex: Edição de Vídeo, Aula de Violão, Formatação" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Descrição detalhada</label>
+                            <textarea id="skillDesc" class="form-control" rows="3" placeholder="Explique como você ajuda as pessoas..." required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Categoria</label>
+                            <select id="skillCategory" class="form-control">
+                                <option value="TECH">Tecnologia (TECH)</option>
+                                <option value="DESIGN">Design & Arte (DESIGN)</option>
+                                <option value="EDUCATION">Educação & Aulas (EDUCATION)</option>
+                                <option value="HOME_REPAIR">Reformas & Reparos (HOME_REPAIR)</option>
+                                <option value="CONSULTING">Consultoria (CONSULTING)</option>
+                                <option value="OTHER">Outros (OTHER)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Fator de Complexidade (1.00 = normal, 1.50 = avançado)</label>
+                            <input type="number" step="0.1" min="0.1" value="1.0" id="skillFactor" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-success">Publicar Habilidade</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Propor Troca -->
+    <div class="modal-overlay" id="proposalModal">
+        <div class="modal">
+            <h3 style="margin-bottom: 10px;">Propor Troca de Horas</h3>
+            <p id="modalSkillTitle" style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 16px;"></p>
+            <form onsubmit="handleSubmitProposal(event)">
+                <input type="hidden" id="modalRequestedSkillId">
+                <div class="form-group">
+                    <label>Quantas horas de serviço você precisa?</label>
+                    <input type="number" step="0.5" min="0.5" value="1.0" id="modalHours" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Forma de Cálculo (Padrão Strategy):</label>
+                    <select id="modalStrategy" class="form-control">
+                        <option value="EQUAL_TIME">Equivalência Direta 1:1 (EqualTimeStrategy)</option>
+                        <option value="COMPLEXITY_WEIGHTED">Ponderada por Complexidade (ComplexityWeightedStrategy)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Data pretendida para o serviço:</label>
+                    <input type="datetime-local" id="modalSchedule" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Mensagem / Observação para o prestador:</label>
+                    <input type="text" id="modalNotes" class="form-control" placeholder="Ex: Preciso de ajuda no sábado pela manhã">
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                    <button type="button" class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+                    <button type="submit" class="btn">Confirmar e Bloquear Horas (Escrow)</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Avaliação -->
+    <div class="modal-overlay" id="reviewModal">
+        <div class="modal">
+            <h3 style="margin-bottom: 12px;">Avaliar Serviço Prestado ⭐</h3>
+            <form onsubmit="handleSubmitReview(event)">
+                <input type="hidden" id="reviewProposalId">
+                <div class="form-group">
+                    <label>Nota (1 a 5 estrelas):</label>
+                    <select id="reviewRating" class="form-control">
+                        <option value="5">⭐⭐⭐⭐⭐ 5 Estrelas (Excelente)</option>
+                        <option value="4">⭐⭐⭐⭐ 4 Estrelas (Muito Bom)</option>
+                        <option value="3">⭐⭐⭐ 3 Estrelas (Bom)</option>
+                        <option value="2">⭐⭐ 2 Estrelas (Regular)</option>
+                        <option value="1">⭐ 1 Estrela (Insatisfatório)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Comentário:</label>
+                    <input type="text" id="reviewComment" class="form-control" placeholder="Ex: Muito pontual e caprichoso!" required>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                    <button type="button" class="btn btn-outline" onclick="closeReviewModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Salvar Avaliação (Observer)</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let authToken = localStorage.getItem('escambo_jwt');
+
+        // Normaliza o nick caso o usuário digite apenas "pedro" sem @
+        function normalizeEmail(input) {
+            const trimmed = input.trim();
+            if (trimmed.includes('@')) {
+                return trimmed;
+            }
+            return trimmed.toLowerCase() + '@bancotempo.com';
+        }
+
+        async function init() {
+            // Seta data mínima futura para o modal
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('modalSchedule').value = tomorrow.toISOString().slice(0, 16);
+
+            // Verifica se já tem token salvo
+            if (authToken) {
+                try {
+                    const res = await fetch('/api/v1/users/me', {
+                        headers: { 'Authorization': 'Bearer ' + authToken }
+                    });
+                    if (res.ok) {
+                        currentUser = await res.json();
+                        showLoggedInApp();
+                        return;
+                    }
+                } catch (e) {
+                    console.error("Token expirado");
+                }
+            }
+
+            logout();
+        }
+
+        function switchAuthTab(tab) {
+            document.getElementById('tabBtnLogin').classList.toggle('active', tab === 'login');
+            document.getElementById('tabBtnRegister').classList.toggle('active', tab === 'register');
+            document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
+            document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const rawNick = document.getElementById('loginNick').value;
+            const password = document.getElementById('loginPassword').value;
+            const email = normalizeEmail(rawNick);
+
+            try {
+                const res = await fetch('/api/v1/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await res.json();
+                if (!res.ok) {
+                    alert("Erro ao entrar: " + (data.message || "Credenciais inválidas."));
+                    return;
+                }
+
+                authToken = data.token;
+                localStorage.setItem('escambo_jwt', authToken);
+                currentUser = data;
+                showLoggedInApp();
+            } catch (err) {
+                alert("Erro de conexão com o servidor.");
+            }
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('regName').value.trim();
+            const rawNick = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const email = normalizeEmail(rawNick);
+
+            try {
+                const res = await fetch('/api/v1/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password })
+                });
+
+                const data = await res.json();
+                if (!res.ok) {
+                    alert("Erro ao criar perfil: " + (data.message || "Nick ou email já em uso."));
+                    return;
+                }
+
+                alert(`🎉 Perfil "${name}" criado com sucesso!\nVocê recebeu 2.00 Horas-Crédito iniciais para começar.`);
+                authToken = data.token;
+                localStorage.setItem('escambo_jwt', authToken);
+                currentUser = data;
+                showLoggedInApp();
+            } catch (err) {
+                alert("Erro de conexão com o servidor.");
+            }
+        }
+
+        function quickFill(userKey) {
+            switchAuthTab('login');
+            if (userKey === 'alice') {
+                document.getElementById('loginNick').value = 'alice';
+                document.getElementById('loginPassword').value = 'senha123';
+            } else if (userKey === 'bob') {
+                document.getElementById('loginNick').value = 'bob';
+                document.getElementById('loginPassword').value = 'senha123';
+            } else if (userKey === 'carlos') {
+                document.getElementById('loginNick').value = 'carlos';
+                document.getElementById('loginPassword').value = 'senha123';
+            }
+        }
+
+        function showLoggedInApp() {
+            document.getElementById('authSection').style.display = 'none';
+            document.getElementById('mainSection').style.display = 'block';
+            document.getElementById('headerUserPanel').style.display = 'flex';
+
+            updateHeader();
+            loadSkills();
+            loadProposals();
+        }
+
+        function logout() {
+            authToken = null;
+            currentUser = null;
+            localStorage.removeItem('escambo_jwt');
+            document.getElementById('authSection').style.display = 'block';
+            document.getElementById('mainSection').style.display = 'none';
+            document.getElementById('headerUserPanel').style.display = 'none';
+            document.getElementById('loginPassword').value = '';
+        }
+
+        async function updateHeader() {
+            try {
+                const res = await fetch('/api/v1/users/me', {
+                    headers: { 'Authorization': 'Bearer ' + authToken }
+                });
+                if (res.ok) {
+                    const user = await res.json();
+                    document.getElementById('headerUserName').textContent = user.name;
+                    document.getElementById('headerTimeBalance').textContent = user.timeBalance.toFixed(2) + 'h';
+                    document.getElementById('headerBlockedBalance').textContent = user.blockedBalance.toFixed(2) + 'h';
+                    document.getElementById('headerReputation').textContent = user.reputationScore.toFixed(1);
+                }
+            } catch (e) {
+                console.error("Erro ao atualizar header");
+            }
+        }
+
+        async function loadSkills() {
+            try {
+                const res = await fetch('/api/v1/skills');
+                const data = await res.json();
+                const grid = document.getElementById('skillsGrid');
+                grid.innerHTML = '';
+
+                data.content.forEach(skill => {
+                    const isOwnSkill = currentUser && (currentUser.userId === skill.providerId || currentUser.id === skill.providerId);
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.innerHTML = `
+                        <div>
+                            <div class="card-header">
+                                <span class="category-tag">${skill.category}</span>
+                                <span style="font-size: 0.85rem; font-weight: 600; color: var(--primary);">x${skill.hourlyRateFactor.toFixed(1)} complexidade</span>
+                            </div>
+                            <h4 class="card-title">${skill.title}</h4>
+                            <p class="card-desc">${skill.description}</p>
+                        </div>
+                        <div class="card-footer">
+                            <div class="provider-info">
+                                Por: <span class="provider-name">${skill.providerName}</span>
+                            </div>
+                            ${isOwnSkill ? 
+                                '<span style="font-size: 0.8rem; color: #94a3b8; font-weight: 600;">Sua oferta</span>' : 
+                                `<button class="btn" onclick="openProposalModal('${skill.id}', '${skill.title}')">Propor Troca</button>`}
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            } catch (err) {
+                console.error("Erro ao carregar habilidades");
+            }
+        }
+
+        async function loadProposals() {
+            try {
+                const res = await fetch('/api/v1/proposals', {
+                    headers: { 'Authorization': 'Bearer ' + authToken }
+                });
+                const data = await res.json();
+                const list = document.getElementById('proposalsList');
+                list.innerHTML = '';
+
+                if (!data.content || data.content.length === 0) {
+                    list.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 40px;">Você ainda não possui trocas em andamento.</p>';
+                    return;
+                }
+
+                data.content.forEach(prop => {
+                    const myId = currentUser.userId || currentUser.id;
+                    const isProvider = myId === prop.providerId;
+                    const card = document.createElement('div');
+                    card.className = 'proposal-card';
+
+                    let actionButtons = '';
+
+                    // Regras do Padrão State
+                    if (prop.status === 'PENDING') {
+                        if (isProvider) {
+                            actionButtons += `<button class="btn btn-success" onclick="transitionProposal('${prop.id}', 'ACCEPTED')">Aceitar Proposta</button> `;
+                        }
+                        actionButtons += `<button class="btn btn-danger" onclick="transitionProposal('${prop.id}', 'CANCELLED')">Cancelar (Estornar Horas)</button>`;
+                    } else if (prop.status === 'ACCEPTED') {
+                        actionButtons += `<button class="btn btn-warning" onclick="transitionProposal('${prop.id}', 'IN_PROGRESS')">Iniciar Serviço</button> `;
+                        actionButtons += `<button class="btn btn-danger" onclick="transitionProposal('${prop.id}', 'CANCELLED')">Cancelar</button>`;
+                    } else if (prop.status === 'IN_PROGRESS') {
+                        actionButtons += `<button class="btn btn-success" onclick="transitionProposal('${prop.id}', 'COMPLETED')">Concluir e Transferir Horas</button> `;
+                        actionButtons += `<button class="btn btn-danger" onclick="transitionProposal('${prop.id}', 'CANCELLED')">Cancelar</button>`;
+                    } else if (prop.status === 'COMPLETED') {
+                        actionButtons += `<button class="btn" style="background: #8b5cf6;" onclick="openReviewModal('${prop.id}')">⭐ Avaliar Serviço</button>`;
+                    }
+
+                    card.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <div>
+                                <strong>Serviço: ${prop.requestedSkillTitle}</strong>
+                                <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 2px;">
+                                    Solicitante: <b>${prop.requesterName}</b> ➔ Prestador: <b>${prop.providerName}</b>
+                                </div>
+                            </div>
+                            <span class="status-badge status-${prop.status}">${prop.status}</span>
+                        </div>
+                        <div style="font-size: 0.9rem; margin-bottom: 14px; background: #f8fafc; padding: 10px; border-radius: 8px;">
+                            ⏱️ Horas: <b>${prop.hoursAgreed.toFixed(2)}h</b> | Agendado para: <b>${new Date(prop.scheduledAt).toLocaleString('pt-BR')}</b>
+                            ${prop.notes ? `<div style="margin-top: 4px; color: #475569;">💬 Nota: "${prop.notes}"</div>` : ''}
+                        </div>
+                        <div style="display: flex; justify-content: flex-end; gap: 8px;">
+                            ${actionButtons}
+                        </div>
+                    `;
+                    list.appendChild(card);
+                });
+            } catch (err) {
+                console.error("Erro ao carregar propostas");
+            }
+        }
+
+        async function transitionProposal(proposalId, targetStatus) {
+            try {
+                const res = await fetch(`/api/v1/proposals/${proposalId}/transition`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + authToken
+                    },
+                    body: JSON.stringify({ targetStatus })
+                });
+
+                if (!res.ok) {
+                    const err = await res.json();
+                    alert("Atenção (Regra do Padrão State): " + err.message);
+                    return;
+                }
+
+                await updateHeader();
+                await loadProposals();
+            } catch (err) {
+                alert("Erro ao transicionar proposta");
+            }
+        }
+
+        function openProposalModal(skillId, skillTitle) {
+            document.getElementById('modalRequestedSkillId').value = skillId;
+            document.getElementById('modalSkillTitle').textContent = "Serviço solicitado: " + skillTitle;
+            document.getElementById('proposalModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('proposalModal').style.display = 'none';
+        }
+
+        async function handleSubmitProposal(e) {
+            e.preventDefault();
+            const requestedSkillId = document.getElementById('modalRequestedSkillId').value;
+            const baseHours = parseFloat(document.getElementById('modalHours').value);
+            const strategyType = document.getElementById('modalStrategy').value;
+            const scheduledAt = document.getElementById('modalSchedule').value;
+            const notes = document.getElementById('modalNotes').value;
+
+            try {
+                const res = await fetch('/api/v1/proposals', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + authToken
+                    },
+                    body: JSON.stringify({
+                        requestedSkillId,
+                        baseHours,
+                        strategyType,
+                        scheduledAt,
+                        notes
+                    })
+                });
+
+                if (!res.ok) {
+                    const err = await res.json();
+                    alert("Não foi possível criar a proposta: " + err.message);
+                    return;
+                }
+
+                closeModal();
+                await updateHeader();
+                showAppTab('propostas');
+                alert("Proposta enviada! Suas horas foram bloqueadas em segurança no Escrow.");
+            } catch (err) {
+                alert("Erro ao enviar proposta");
+            }
+        }
+
+        function openReviewModal(proposalId) {
+            document.getElementById('reviewProposalId').value = proposalId;
+            document.getElementById('reviewModal').style.display = 'flex';
+        }
+
+        function closeReviewModal() {
+            document.getElementById('reviewModal').style.display = 'none';
+        }
+
+        async function handleSubmitReview(e) {
+            e.preventDefault();
+            const proposalId = document.getElementById('reviewProposalId').value;
+            const rating = parseInt(document.getElementById('reviewRating').value);
+            const comment = document.getElementById('reviewComment').value;
+
+            try {
+                const res = await fetch(`/api/v1/proposals/${proposalId}/reviews`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + authToken
+                    },
+                    body: JSON.stringify({ rating, comment })
+                });
+
+                if (!res.ok) {
+                    const err = await res.json();
+                    alert(err.message);
+                    return;
+                }
+
+                closeReviewModal();
+                await updateHeader();
+                alert("Avaliação registrada com sucesso! A reputação do usuário foi recalculada pelo Observer.");
+            } catch (err) {
+                alert("Erro ao enviar avaliação");
+            }
+        }
+
+        async function handleCreateSkill(e) {
+            e.preventDefault();
+            const title = document.getElementById('skillTitle').value;
+            const description = document.getElementById('skillDesc').value;
+            const category = document.getElementById('skillCategory').value;
+            const hourlyRateFactor = parseFloat(document.getElementById('skillFactor').value);
+
+            try {
+                const res = await fetch('/api/v1/skills', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + authToken
+                    },
+                    body: JSON.stringify({ title, description, category, hourlyRateFactor })
+                });
+
+                if (res.ok) {
+                    alert("Habilidade publicada no catálogo com sucesso!");
+                    document.getElementById('skillTitle').value = '';
+                    document.getElementById('skillDesc').value = '';
+                    showAppTab('catalogo');
+                } else {
+                    const err = await res.json();
+                    alert(err.message);
+                }
+            } catch (err) {
+                alert("Erro ao publicar habilidade");
+            }
+        }
+
+        function showAppTab(tab) {
+            document.querySelectorAll('.app-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+            event && event.target && event.target.classList.add('active');
+
+            document.getElementById('app-tab-catalogo').style.display = tab === 'catalogo' ? 'block' : 'none';
+            document.getElementById('app-tab-propostas').style.display = tab === 'propostas' ? 'block' : 'none';
+            document.getElementById('app-tab-nova-oferta').style.display = tab === 'nova-oferta' ? 'block' : 'none';
+
+            if (tab === 'catalogo') loadSkills();
+            if (tab === 'propostas') loadProposals();
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>

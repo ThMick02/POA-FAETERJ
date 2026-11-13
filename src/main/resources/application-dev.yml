@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: bancotempo-dev
+  datasource:
+    url: jdbc:h2:file:./data/escambodb;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH
+    username: sa
+    password: 
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  flyway:
+    enabled: false
+
+server:
+  port: 8080
+
+jwt:
+  secret: 9a678bc561876543210abcdef9876543210abcdef9876543210abcdef98765432
+  expiration-ms: 86400000
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
